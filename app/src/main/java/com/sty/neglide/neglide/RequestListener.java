@@ -1,4 +1,4 @@
-package com.sty.neglide;
+package com.sty.neglide.neglide;
 
 import android.graphics.Bitmap;
 

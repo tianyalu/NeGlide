@@ -1,9 +1,13 @@
-package com.sty.neglide;
+package com.sty.neglide.neglide;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
+import android.os.Looper;
 import android.widget.ImageView;
+
+import com.sty.neglide.MyApplication;
+import com.sty.neglide.cache.DoubleLruCache;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,8 +20,11 @@ import java.util.concurrent.LinkedBlockingDeque;
  * 处理图片请求类
  */
 public class BitmapDispatcher extends Thread{
-    private Handler mHandler = new Handler();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
     private LinkedBlockingDeque<BitmapRequest> requestQueue;
+
+    //获取三级缓存对象
+    private DoubleLruCache doubleLruCache = new DoubleLruCache(MyApplication.getMyApplication());
 
     public BitmapDispatcher(LinkedBlockingDeque<BitmapRequest> requestQueue) {
         this.requestQueue = requestQueue;
@@ -62,7 +69,7 @@ public class BitmapDispatcher extends Thread{
         //处理缓存的问题
         Bitmap bitmap = null;
         //去内存或者磁盘加载图片
-//        bitmap = findImageFromCache(br.getUrlMd5());
+        bitmap = doubleLruCache.get(br);
 
         //1.先让服务器将图片分为缩略图和原图
         //2.缩略图放到内存缓存及硬盘缓存，原图只放硬盘缓存
@@ -70,6 +77,9 @@ public class BitmapDispatcher extends Thread{
         if(bitmap == null) {
             //网络加载图片
             bitmap = downloadImage(br.getUrl());
+            if(bitmap != null) {
+                doubleLruCache.put(br, bitmap);
+            }
         }
         return bitmap;
     }

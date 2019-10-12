@@ -1,7 +1,9 @@
-package com.sty.neglide;
+package com.sty.neglide.neglide;
 
 import android.content.Context;
 import android.widget.ImageView;
+
+import com.sty.neglide.MD5Utils;
 
 import java.lang.ref.SoftReference;
 

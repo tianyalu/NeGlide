@@ -1,9 +1,9 @@
-package com.sty.neglide;
+package com.sty.neglide.neglide;
 
 import java.util.concurrent.LinkedBlockingDeque;
 
 public class RequestManager {
-    private static RequestManager requestManager;
+    private static RequestManager requestManager = new RequestManager();
 
     private RequestManager() {
         start();
